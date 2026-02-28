@@ -1,0 +1,30 @@
+import json
+
+# Reuse portal_data from the previous step
+
+# Initialize a list to store the Cypher queries for calculating and updating metrics
+metric_cypher_queries = []
+
+# Query to calculate Fan-in, Fan-out, and Instability for each component
+metric_cypher_queries.append(
+    """MATCH (c:Component)
+OPTIONAL MATCH (c)<-[:DEPENDS_ON]-(d:Component)
+WITH c, COUNT(DISTINCT d) AS fanIn
+OPTIONAL MATCH (c)-[:DEPENDS_ON]->(e:Component)
+WITH c, fanIn, COUNT(DISTINCT e) AS fanOut
+WITH c, fanIn, fanOut, CASE WHEN (fanIn + fanOut) = 0 THEN 0.0 ELSE toFloat(fanOut) / (fanIn + fanOut) END AS instability
+SET c.fanIn = fanIn, c.fanOut = fanOut, c.instability = instability;
+"""
+)
+
+# Combine all metric calculation queries into a single string
+final_metric_cypher_script = "\n".join(metric_cypher_queries)
+
+# Optionally, append this to the migration script or save separately
+# For this subtask, we will just print and save it as a separate script for clarity
+with open('neo4j_stability_metrics.cypher', 'w') as f:
+    f.write(final_metric_cypher_script)
+
+print("Neo4j stability metrics script (neo4j_stability_metrics.cypher) created successfully. You can download it from the files pane.")
+print("\n--- Generated Stability Metrics Cypher Script ---\n")
+print(final_metric_cypher_script)
