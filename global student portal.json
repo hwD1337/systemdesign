@@ -1,0 +1,18 @@
+import json
+
+global_student_portal_dependencies = json.dumps({
+    "components": [
+        {"name": "UserAuthentication", "depends_on": []},
+        {"name": "StudentProfile", "depends_on": ["UserAuthentication"]},
+        {"name": "CourseCatalog", "depends_on": []},
+        {"name": "EnrollmentService", "depends_on": ["UserAuthentication", "CourseCatalog"]},
+        {"name": "PaymentGateway", "depends_on": ["UserAuthentication"]},
+        {"name": "NotificationService", "depends_on": []},
+        {"name": "AcademicRecords", "depends_on": ["StudentProfile", "EnrollmentService"]},
+        {"name": "HelpDesk", "depends_on": ["UserAuthentication"]},
+        {"name": "Dashboard", "depends_on": ["StudentProfile", "EnrollmentService", "AcademicRecords", "NotificationService"]},
+        {"name": "FeedbackSystem", "depends_on": ["UserAuthentication"]}
+    ]
+}, indent=4)
+
+print(global_student_portal_dependencies)
