@@ -1,0 +1,28 @@
+docker_compose_content = """version: '3.8'
+
+services:
+  neo4j:
+    image: neo4j:latest
+    hostname: neo4j
+    ports:
+      - "7474:7474" # Bolt port (for client applications)
+      - "7687:7687" # HTTP port (for browser access)
+    volumes:
+      - neo4j_data:/data # Persist data
+      - neo4j_plugins:/plugins # For Neo4j plugins (optional)
+    environment:
+      - NEO4J_AUTH=neo4j/password # Replace 'password' with a strong password
+      - NEO4J_dbms_memory_heap_initial__size=512m
+      - NEO4J_dbms_memory_heap_max__size=1G
+
+volumes:
+  neo4j_data:
+    external: false
+  neo4j_plugins:
+    external: false
+"""
+
+with open('docker-compose.yml', 'w') as f:
+    f.write(docker_compose_content)
+
+print("docker-compose.yml created successfully. You can download it from the files pane.")
